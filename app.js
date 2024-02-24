@@ -1,12 +1,23 @@
 const express = require("express");
+const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 const url = process.env.MONGODB_URI;
 
-const app = express();
+app.use(express.json());
+const Product = require("./models/productModel");
 
 app.get("/", (req, res) => res.send("Hello World!"));
 app.get("/about", (req, res) => res.send("About us"));
+app.post("/product", async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(200).json(product);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 mongoose
   .connect(url)
