@@ -18,7 +18,6 @@ app.get("/products", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 app.get("/products/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -28,6 +27,22 @@ app.get("/products/:id", async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: error.message });
+  }
+});
+app.put("/products/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+    if (!product) {
+      res
+        .status(404)
+        .json({ message: `cannot find a product with an ID ${id}` });
+    }
+    const updatedProduct = await Product.findById(id);
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.json });
   }
 });
 
